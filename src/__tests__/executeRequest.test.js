@@ -7,21 +7,19 @@ const {describe, it, beforeEach, afterEach} = global;
 const expect = chai.expect;
 chai.use(sinonChai);
 
-import ExecuteRequestModul from '../executeRequest';
-import {executeRequest} from '../executeRequest';
+import {execute, __RewireAPI__ as ExecuteRewireAPI} from '../executeRequest';
 
 describe('executeRequest', () => {
   let requestMock;
 
   beforeEach(() => {
     requestMock = sinon.mock();
-
-    ExecuteRequestModul.__Rewire__('request', requestMock);
+    ExecuteRewireAPI.__Rewire__('request', requestMock);
 
   });
 
   afterEach(() => {
-    ExecuteRequestModul.__ResetDependency__('request');
+    ExecuteRewireAPI.__ResetDependency__('request');
   });
 
   describe('on status code between 200 and 226', () => {
@@ -33,14 +31,14 @@ describe('executeRequest', () => {
         requestMock.callsArgWithAsync(1, null, response, body);
       });
 
-      it('should return an object', done => {
-        executeRequest('get', {})
+      it('should return an object', (done) => {
+        execute('get')
           .subscribe({
-            next: response => {
+            next: (response) => {
               expect(response).to.be.an('object');
               expect(response.photoId).to.be.eq(1);
             },
-            error: err => {
+            error: (err) => {
               expect(err).to.be.equals(null);
             },
             complete: () => done()
@@ -56,13 +54,13 @@ describe('executeRequest', () => {
         requestMock.callsArgWithAsync(1, null, response, body);
       });
 
-      it('should return error and response undefined', done => {
-        executeRequest('get', {})
+      it('should return error and response undefined', (done) => {
+        execute('get')
           .subscribe({
-            next: response => {
+            next: (response) => {
               expect(response).to.be.eq(undefined);
             },
-            error: err => {
+            error: (err) => {
               expect(err).to.be.equals(undefined);
             },
             complete: () => done()
@@ -80,13 +78,13 @@ describe('executeRequest', () => {
         requestMock.callsArgWithAsync(1, null, response, body);
       });
 
-      it('should return an error from the body', done => {
-        executeRequest('get', {})
+      it('should return an error from the body', (done) => {
+        execute('get')
           .subscribe({
-            next: response => {
+            next: (response) => {
               expect(response).to.be.eq(undefined);
             },
-            error: err => {
+            error: (err) => {
               expect(err.statusCode).to.be.equals(403);
               expect(err.body).to.be.equals('weird error');
               done();
@@ -104,13 +102,13 @@ describe('executeRequest', () => {
         requestMock.callsArgWithAsync(1, null, response, body);
       });
 
-      it('should return an error from the body', done => {
-        executeRequest('get', {})
+      it('should return an error from the body', (done) => {
+        execute('get')
           .subscribe({
-            next: response => {
+            next: (response) => {
               expect(response).to.be.eq(null);
             },
-            error: err => {
+            error: (err) => {
               expect(err.message).to.be.equals('UNKNOWN_ERROR');
               expect(err.body).to.be.equals('<html>Nasty error</html>');
               expect(err.statusCode).to.be.equals(500);

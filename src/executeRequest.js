@@ -3,11 +3,11 @@
 let request = require('request');
 import {Observable} from 'rxjs/Rx';
 
-let executeRequest = requestOptions => {
-  return Observable.create(observer => {
+let execute = (requestOptions) => {
+  return Observable.create((observer) => {
     requestObservable(requestOptions)
       .subscribe({
-        next: result => {
+        next: (result) => {
           if (result.response.statusCode < 200 || result.response.statusCode > 226) {
             const unknownError = new Error('UNKNOWN_ERROR');
             unknownError.statusCode = result.response.statusCode;
@@ -19,7 +19,7 @@ let executeRequest = requestOptions => {
             observer.next(JSON.parse(result.body));
           }
         },
-        error: err => {
+        error: (err) => {
           observer.error(err);
         },
         complete: () => observer.complete()
@@ -27,8 +27,8 @@ let executeRequest = requestOptions => {
   });
 };
 
-let requestObservable = options => {
-  return Observable.create(observer => {
+let requestObservable = (options) => {
+  return Observable.create((observer) => {
     request(options, (err, response, body) => {
       if (err) {
         observer.error(err);
@@ -40,4 +40,4 @@ let requestObservable = options => {
   });
 };
 
-module.exports = {executeRequest, requestObservable};
+module.exports = {execute, requestObservable};
