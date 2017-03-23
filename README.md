@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/bonomat/picasa-rx.svg?branch=master)](https://travis-ci.org/bonomat/picasa-rx)
+
+
 # picasa-rx
 
 A picasa web album client written in ES2015 using rxJs observables.
