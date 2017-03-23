@@ -23,6 +23,16 @@ const photoSchema = {
   title: 'title',
   summary: 'summary'
 };
+const albumSchema = {
+  gphoto$id: 'id',
+  gphoto$name: 'name',
+  gphoto$numphotos: 'num_photos',
+  published: 'published',
+  title: 'title',
+  summary: 'summary',
+  gphoto$location: 'location',
+  gphoto$nickname: 'nickname'
+};
 
 let getPhotos = (accessToken, givenOptions) => {
 
@@ -56,6 +66,29 @@ let getPhotos = (accessToken, givenOptions) => {
       ));
 };
 
+let getAlbums = (accessToken) => {
+  const accessTokenParams = {
+    alt: FETCH_AS_JSON,
+    access_token: accessToken // eslint-disable-line
+  };
+
+  const requestQuery = querystring.stringify(accessTokenParams);
+
+  const requestOptions = {
+    url: `${PICASA_SCOPE}${PICASA_API_FEED_PATH}?${requestQuery}`,
+    headers: {
+      'GData-Version': '2'
+    }
+  };
+
+  return execute(requestOptions)
+    .map((body) =>
+      body.feed.entry.map(
+        (entry) => parseEntry(entry, albumSchema)
+      ));
+};
+/** **************************************************** helpers ******************************************************/
+
 let parseEntry = (entry, schema) => {
   let photo = {};
 
@@ -84,4 +117,4 @@ let isValidType = (value) => {
   return typeof value === 'string' || typeof value === 'number';
 };
 
-module.exports = {getPhotos};
+module.exports = {getPhotos, getAlbums};
