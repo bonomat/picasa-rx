@@ -17,7 +17,7 @@ A picasa web album client written in ES2015 using rxJs observables.
 
 ## Testing
 
-* You can write test under `__test__` directory anywhere inside `lib` including sub-directories.
+* You can write test under `__test__` directory anywhere inside `src` including sub-directories.
 * Then run `npm test` to test your code. (It'll lint your code as well).
 * You can also run `npm run testonly` to run tests without linting.
 
@@ -32,4 +32,5 @@ A picasa web album client written in ES2015 using rxJs observables.
 ## Kudos
 
 * Babel6, RXJs and the team behind of them.
+* Picasa client based on this project [https://github.com/esteban-uo/picasa](https://github.com/esteban-uo/picasa)
 * npm-base for the basis of this project [npm-base](https://github.com/kadirahq/npm-base)
