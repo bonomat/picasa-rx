@@ -29,7 +29,7 @@ let getPhotos = (accessToken, givenOptions) => {
   const accessTokenParams = {
     alt: FETCH_AS_JSON,
     kind: 'photo',
-    access_token: accessToken
+    access_token: accessToken // eslint-disable-line
   };
 
   let options = givenOptions || {};
