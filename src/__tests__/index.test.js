@@ -93,25 +93,25 @@ describe('PicasaTest', () => {
 
       it('should have specific URL', () => {
         const url = options.url;
-        expect(url).to.be.eql(`https://picasaweb.google.com/data/feed/api/user/default?
-                               alt=json&
-                               kind=photo&
-                               access_token=someAccessTokenAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&
-                               max-results=1`);
+        expect(url).to.be.eql('https://picasaweb.google.com/data/feed/api/user/default?' +
+          'alt=json&' +
+          'kind=photo&' +
+          'access_token=someAccessTokenAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&' +
+          'max-results=1');
       });
 
       it('should not have more than those three values', () => {
         expect(options).to.be.eql({
           method: 'GET',
           headers: {'GData-Version': '2'},
-          url: `https://picasaweb.google.com/data/feed/api/user/default?
-                alt=json&kind=photo&
-                access_token=someAccessTokenAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&
-                max-results=1`
+          url: 'https://picasaweb.google.com/data/feed/api/user/default?' +
+          'alt=json&' +
+          'kind=photo&' +
+          'access_token=someAccessTokenAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&' +
+          'max-results=1'
         });
       });
     });
   });
-
 
 });
