@@ -38,7 +38,7 @@
   },
 
   "rules": {
-    "babel/arrow-parens": [2, "as-needed"],
+    "babel/arrow-parens": [1, "always"],
     "array-bracket-spacing": [2, "always"],
     "arrow-spacing": 2,
     "block-scoped-var": 0,
