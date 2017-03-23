@@ -56,7 +56,7 @@ let getPhotos = (accessToken, givenOptions) => {
     method: 'GET',
     url: `${PICASA_SCOPE}${PICASA_API_FEED_PATH}${albumPart}?${requestQuery}`,
     headers: {
-      'GData-Version': '2'
+      'GData-Version': '3'
     }
   };
   return execute(requestOptions)
@@ -77,7 +77,7 @@ let getAlbums = (accessToken) => {
   const requestOptions = {
     url: `${PICASA_SCOPE}${PICASA_API_FEED_PATH}?${requestQuery}`,
     headers: {
-      'GData-Version': '2'
+      'GData-Version': '3'
     }
   };
 

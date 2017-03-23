@@ -93,7 +93,7 @@ describe('PicasaTest', () => {
 
       it('should hold specific GData-Version in header', () => {
         const headers = options.headers;
-        expect(headers).to.be.eql({'GData-Version': '2'});
+        expect(headers).to.be.eql({'GData-Version': '3'});
       });
 
       it('should have specific URL', () => {
@@ -108,7 +108,7 @@ describe('PicasaTest', () => {
       it('should not have more than those three values', () => {
         expect(options).to.be.eql({
           method: 'GET',
-          headers: {'GData-Version': '2'},
+          headers: {'GData-Version': '3'},
           url: 'https://picasaweb.google.com/data/feed/api/user/default?' +
           'alt=json&' +
           'kind=photo&' +
