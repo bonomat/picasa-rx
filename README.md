@@ -3,12 +3,18 @@
 
 # picasa-rx
 
-A picasa web album client written in ES2015 using rxJs observables.
+A picasa web album client written in ES2015 using RxJS observables.
 
 ---
 
 
 ## Basic Usage
+
+### Installation
+
+```bash
+$ npm install picasa-rx
+```
 
 #### Getting photos
 ```javascript
@@ -74,11 +80,6 @@ readFileAsObservable(photo)
 
 checkout the example folder for more details
 
-### Installation
-
-```bash
-$ npm install picasa-rx
-```
 
 ## Linting
 
