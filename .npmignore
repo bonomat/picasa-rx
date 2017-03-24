@@ -8,3 +8,6 @@
 .eslintrc
 npm-debug.log
 lib
+
+dist/examples
+examples

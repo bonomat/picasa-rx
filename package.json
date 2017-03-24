@@ -1,7 +1,8 @@
 {
   "name": "picasa-rx",
   "version": "1.0.0",
-  "description": "A Picasa WebClient written in ES2015 using rxJS Observables",
+  "description": "A Picasa WebClient written in ES2015 using RXJs Observables",
+  "author" : "Philipp Hoenisch",
   "repository": {
     "type": "git",
     "url": "https://github.com/bonomat/picasa-rx.git"
