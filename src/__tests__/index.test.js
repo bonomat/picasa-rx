@@ -8,7 +8,7 @@ chai.use(sinonChai);
 
 import {TestScheduler, next, complete} from '@kwonoj/rxjs-testscheduler-compat';
 
-import {getPhotos, getAlbums, __RewireAPI__ as PicasaRewireAPI} from '../index';
+import {getPhotos, getAlbums, postPhoto, __RewireAPI__ as PicasaRewireAPI} from '../index';
 
 
 describe('PicasaTest', () => {
@@ -119,7 +119,7 @@ describe('PicasaTest', () => {
     });
   });
 
-  describe('getAlbumts', () => {
+  describe('getAlbums', () => {
     describe('on success', () => {
       const fakeSuccessBody = {
         feed: {
@@ -204,6 +204,101 @@ describe('PicasaTest', () => {
         expect(albums[0].nickname).to.be.equals('Max Mustermann');
       });
 
+    });
+  });
+
+  describe('postPhoto', () => {
+    describe('on success', () => {
+      const fakeSuccessBody = {
+        entry: {
+          title: {
+            $t: 'IMG_0001.JPG'
+          },
+          content: {
+            type: 'image/jpeg',
+            src: 'https://lh3.googleusercontent.com/-1111111/1111/11111/1111/IMG_0001.JPG'
+          }
+        }
+      };
+      let photo;
+      let options;
+
+      beforeEach((done) => {
+        /* eslint-disable */
+        const subject = testScheduler.createHotObservable(
+          next(20, fakeSuccessBody),
+          complete(30)
+        );
+        /* eslint-enable */
+
+        executorMockFunction = (option) => {
+          options = option;
+          return subject;
+        };
+        PicasaRewireAPI.__Rewire__('execute', executorMockFunction);
+
+        const albumId = 'anAlbumId';
+        const photoData = {
+          title: 'An awesome title',
+          description: 'Yolo',
+          contentType: 'image/jpeg',
+          binary: 'ImaginaryBinaryContent'
+        };
+
+        postPhoto(accessToken, albumId, photoData).subscribe({
+          next: (photoResponse) => {
+            photo = photoResponse;
+            return;
+          },
+          error: (err) => expect(err).to.be.equals(null),
+          complete: () => {
+            done();
+          }
+        });
+        testScheduler.advanceTo(31);
+      });
+
+      afterEach(() => {
+        PicasaRewireAPI.__ResetDependency__('execute');
+      });
+      it('returns a photo object', () => {
+        expect(photo).to.be.an('object');
+      });
+
+      it('returns a photo with its props', () => {
+        expect(photo.title).to.be.equals('IMG_0001.JPG');
+        expect(photo.content.src).to.contain('IMG_0001.JPG');
+        expect(photo.content.type).to.be.equals('image/jpeg');
+      });
+
+      it('should make post request', () => {
+        const calledMethod = options.method;
+        expect(calledMethod.toLowerCase()).to.be.eql('post');
+      });
+
+      it('should prepare a multipart request and the URL and the method type', () => {
+        expect(options).to.be.eql({
+          method: 'POST',
+          multipart: [
+            {
+              'Content-Type': 'application/atom+xml',
+              body: `<entry xmlns="http://www.w3.org/2005/Atom">
+                          <title>An awesome title</title>
+                          <summary>undefined</summary>
+                          <category scheme="http://schemas.google.com/g/2005#kind" 
+                          term="http://schemas.google.com/photos/2007#photo"/>
+                        </entry>`
+            },
+            {
+              'Content-Type': 'image/jpeg',
+              body: 'ImaginaryBinaryContent'
+            }
+          ],
+          url: 'https://picasaweb.google.com/data/feed/api/user/default/albumid/anAlbumId?' +
+          'alt=json&' +
+          'access_token=someAccessTokenAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+        });
+      });
     });
   });
 });

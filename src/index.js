@@ -87,6 +87,34 @@ let getAlbums = (accessToken) => {
         (entry) => parseEntry(entry, albumSchema)
       ));
 };
+
+
+let postPhoto = (accessToken, albumId, photoData) => {
+  const requestQuery = querystring.stringify({
+    alt: FETCH_AS_JSON,
+    access_token: accessToken // eslint-disable-line
+  });
+
+  const photoInfoAtom = `<entry xmlns="http://www.w3.org/2005/Atom">
+                          <title>${photoData.title}</title>
+                          <summary>${photoData.summary}</summary>
+                          <category scheme="http://schemas.google.com/g/2005#kind" 
+                          term="http://schemas.google.com/photos/2007#photo"/>
+                        </entry>`;
+
+  const requestOptions = {
+    method: 'POST',
+    url: `${PICASA_SCOPE}${PICASA_API_FEED_PATH}/albumid/${albumId}?${requestQuery}`,
+    multipart: [
+      {'Content-Type': 'application/atom+xml', body: photoInfoAtom},
+      {'Content-Type': photoData.contentType, body: photoData.binary}
+    ]
+  };
+
+  return execute(requestOptions)
+    .map((body) => parseEntry(body.entry, photoSchema));
+};
+
 /** **************************************************** helpers ******************************************************/
 
 let parseEntry = (entry, schema) => {
@@ -117,4 +145,4 @@ let isValidType = (value) => {
   return typeof value === 'string' || typeof value === 'number';
 };
 
-module.exports = {getPhotos, getAlbums};
+module.exports = {getPhotos, getAlbums, postPhoto};
