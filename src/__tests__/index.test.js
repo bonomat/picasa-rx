@@ -8,7 +8,7 @@ chai.use(sinonChai);
 
 import {TestScheduler, next, complete} from '@kwonoj/rxjs-testscheduler-compat';
 
-import {getPhotos, getAlbums, postPhoto, __RewireAPI__ as PicasaRewireAPI} from '../index';
+import {getPhotos, getAlbums, postPhoto, deletePhoto, __RewireAPI__ as PicasaRewireAPI} from '../index';
 
 
 describe('PicasaTest', () => {
@@ -295,6 +295,61 @@ describe('PicasaTest', () => {
             }
           ],
           url: 'https://picasaweb.google.com/data/feed/api/user/default/albumid/anAlbumId?' +
+          'alt=json&' +
+          'access_token=someAccessTokenAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+        });
+      });
+    });
+  });
+
+  describe('deletePhoto', () => {
+    describe('on success', () => {
+      let options;
+
+      beforeEach((done) => {
+        /* eslint-disable */
+        const subject = testScheduler.createHotObservable(
+          next(20),
+          complete(30)
+        );
+        /* eslint-enable */
+
+        executorMockFunction = (option) => {
+          options = option;
+          return subject;
+        };
+        PicasaRewireAPI.__Rewire__('execute', executorMockFunction);
+
+        const albumId = 'anAlbumId';
+        const photoId = 'aPhotoId';
+
+        deletePhoto(accessToken, albumId, photoId).subscribe({
+          next: (result) => expect(result).to.be.equals(undefined),
+          error: (err) => expect(err).to.be.equals(null),
+          complete: () => done()
+        });
+        testScheduler.advanceTo(31);
+
+      });
+
+      afterEach(() => {
+        PicasaRewireAPI.__ResetDependency__('execute');
+      });
+
+      it('should make delete request', () => {
+        const method = options.method;
+
+        expect(method.toLowerCase()).to.be.eql('delete');
+      });
+
+      it('should prepare headers request and the URL', () => {
+
+        expect(options).to.be.eql({
+          method: 'DELETE',
+          headers: {
+            'If-Match': '*'
+          },
+          url: 'https://picasaweb.google.com/data/entry/api/user/default/albumid/anAlbumId/photoid/aPhotoId?' +
           'alt=json&' +
           'access_token=someAccessTokenAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
         });

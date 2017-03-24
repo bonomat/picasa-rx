@@ -6,6 +6,7 @@ import {execute} from './executeRequest';
 
 const PICASA_SCOPE = 'https://picasaweb.google.com/data';
 const PICASA_API_FEED_PATH = '/feed/api/user/default';
+const PICASA_API_ENTRY_PATH = '/entry/api/user/default';
 const FETCH_AS_JSON = 'json';
 const photoSchema = {
   gphoto$id: 'id',
@@ -115,6 +116,24 @@ let postPhoto = (accessToken, albumId, photoData) => {
     .map((body) => parseEntry(body.entry, photoSchema));
 };
 
+
+let deletePhoto = (accessToken, albumId, photoId) => {
+  const requestQuery = querystring.stringify({
+    alt: FETCH_AS_JSON,
+    access_token: accessToken // eslint-disable-line
+  });
+
+  const requestOptions = {
+    method: 'DELETE',
+    url: `${PICASA_SCOPE}${PICASA_API_ENTRY_PATH}/albumid/${albumId}/photoid/${photoId}?${requestQuery}`,
+    headers: {
+      'If-Match': '*'
+    }
+  };
+
+  return execute(requestOptions);
+};
+
 /** **************************************************** helpers ******************************************************/
 
 let parseEntry = (entry, schema) => {
@@ -145,4 +164,4 @@ let isValidType = (value) => {
   return typeof value === 'string' || typeof value === 'number';
 };
 
-module.exports = {getPhotos, getAlbums, postPhoto};
+module.exports = {getPhotos, getAlbums, postPhoto, deletePhoto};
