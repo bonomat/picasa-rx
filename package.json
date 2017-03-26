@@ -1,6 +1,6 @@
 {
   "name": "picasa-rx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Picasa WebClient written in ES2015 using RXJs Observables",
   "author" : "Philipp Hoenisch",
   "repository": {
