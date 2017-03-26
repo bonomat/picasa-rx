@@ -4,27 +4,24 @@ let request = require('request');
 import {Observable} from 'rxjs/Rx';
 
 let execute = (requestOptions) => {
-  return Observable.create((observer) => {
-    requestObservable(requestOptions)
-      .subscribe({
-        next: (result) => {
-          if (result.response.statusCode < 200 || result.response.statusCode > 226) {
-            const unknownError = new Error('UNKNOWN_ERROR');
-            unknownError.statusCode = result.response.statusCode;
-            unknownError.body = result.body;
-            observer.error(unknownError);
-          } else if (result.body.length < 1) {
-            observer.next();
-          } else {
-            observer.next(JSON.parse(result.body));
-          }
-        },
-        error: (err) => {
-          observer.error(err);
-        },
-        complete: () => observer.complete()
-      });
-  });
+  return requestObservable(requestOptions)
+    .mergeMap((result) => {
+      if (result.response.statusCode > 400 && result.response.statusCode < 500) {
+        const error = new Error('Token Authentication Error');
+        error.statusCode = result.response.statusCode;
+        error.body = result.body;
+        return Observable.throw(error);
+      }
+      if (result.response.statusCode < 200 || result.response.statusCode > 226) {
+        const unknownError = new Error('UNKNOWN_ERROR');
+        unknownError.statusCode = result.response.statusCode;
+        unknownError.body = result.body;
+        return Observable.throw(unknownError);
+      } else if (result.body.length < 1) {
+        return Observable.of();
+      }
+      return Observable.of(JSON.parse(result.body));
+    });
 };
 
 let requestObservable = (options) => {

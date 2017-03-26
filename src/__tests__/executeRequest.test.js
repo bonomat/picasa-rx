@@ -7,6 +7,7 @@ const {describe, it, beforeEach, afterEach} = global;
 const expect = chai.expect;
 chai.use(sinonChai);
 
+import {Observable} from 'rxjs/Rx';
 import {execute, __RewireAPI__ as ExecuteRewireAPI} from '../executeRequest';
 
 describe('executeRequest', () => {
@@ -78,18 +79,21 @@ describe('executeRequest', () => {
         requestMock.callsArgWithAsync(1, null, response, body);
       });
 
-      it('should return an error from the body', (done) => {
+      it('should throw an error', (done) => {
         execute('get')
+          .catch((err) => {
+            expect(err.statusCode).to.be.equals(403);
+            expect(err.body).to.be.equals('weird error');
+            return Observable.of('error caught');
+          })
           .subscribe({
-            next: (response) => {
-              expect(response).to.be.eq(undefined);
+            next: (caughtError) => {
+              expect(caughtError).to.be.eq('error caught');
             },
             error: (err) => {
-              expect(err.statusCode).to.be.equals(403);
-              expect(err.body).to.be.equals('weird error');
-              done();
+              done(new Error('Should not happen: ' + err));
             },
-            complete: () => done(new Error('Should not complete'))
+            complete: () => done()
           });
       });
     });
